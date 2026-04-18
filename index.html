@@ -1084,9 +1084,7 @@ footer {
   text-align: center;
   padding: 20px;
 }
-@media (max-width: 900px) { .cursor, .cursor-ring { display: none !important; } }
 </style>
-
 </head>
 <body>
 
@@ -1744,7 +1742,7 @@ if (canvas) {
     }
   }
 
-  for (let i = 0; i < 150; i++) particles.push(new Particle());
+  let yildiz = window.innerWidth < 768 ? 40 : 150; for (let i = 0; i < yildiz; i++) particles.push(new Particle());
 
   function animateCanvas() {
     ctx.clearRect(0, 0, width, height);
