@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Başvuru / Apply | KOMUN'26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+/* ========================
+   RESET & BASE (Shared)
+======================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+:root {
+  --navy:   #060408;
+  --navy2:  #0a0812;
+  --blue:   #1a2a6c;
+  --gold:   #ffffff;
+  --gold2:  #d1d1d1;
+  --white:  #f5f5f0;
+  --gray:   #9ea8b3;
+  --light:  #dde3ec;
+  --glass:  rgba(255,255,255,0.04);
+  --glassborder: rgba(255,255,255,0.2);
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-ui:      'Montserrat', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  --transition:   all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+body {
+  background: var(--navy);
+  color: var(--white);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ========================
+   CURSOR
+======================== */
+.cursor {
+  width: 10px; height: 10px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s ease, width 0.3s, height 0.3s, background 0.3s;
+}
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.15s ease, width 0.3s, height 0.3s, opacity 0.3s;
+  opacity: 0.6;
+}
+body:hover .cursor { opacity: 1; }
+
+/* ========================
+   NAVBAR (Minimal version for Apply)
+======================== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px;
+  background: rgba(10,15,30,0.85);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--glassborder);
+  transition: var(--transition);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-logo span { color: var(--gold); }
+.nav-back {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  text-decoration: none;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-back:hover { color: var(--gold); }
+
+/* ========================
+   APPLY FORM STYLES
+======================== */
+#apply-hero {
+  min-height: 100vh;
+  padding: 140px 24px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.apply-bg {
+  position: absolute; inset: 0;
+  background: 
+    radial-gradient(ellipse 60% 80% at 50% 50%, rgba(26,42,108,0.4) 0%, transparent 80%),
+    linear-gradient(180deg, #0d1530 0%, #0a0f1e 100%);
+  z-index: 0;
+}
+.stars { position: absolute; inset: 0; z-index: 0; }
+
+.apply-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 800px;
+  animation: fadeUp 1s ease forwards 0.2s;
+  opacity: 0;
+  transform: translateY(30px);
+}
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.glass-panel {
+  background: rgba(10,15,30,0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glassborder);
+  border-radius: 4px;
+  padding: 56px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+}
+
+.apply-header { text-align: center; margin-bottom: 48px; }
+.apply-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.apply-header h1 span { color: var(--gold); }
+.apply-header p {
+  font-size: 1rem;
+  color: var(--light);
+  line-height: 1.6;
+}
+
+/* Form Layout */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.form-group {
+  margin-bottom: 24px;
+  position: relative;
+}
+.form-group.full { grid-column: span 2; }
+
+label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--gray);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+label span.en {
+  text-transform: none;
+  font-style: italic;
+  color: rgba(255,255,255,0.3);
+  margin-left: 6px;
+}
+
+input, select, textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  padding: 16px 20px;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.08);
+}
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ea8b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  cursor: pointer;
+}
+select option { background: var(--navy2); color: var(--white); }
+textarea { resize: vertical; min-height: 140px; }
+
+.radio-group { display: flex; gap: 32px; margin-top: 12px; }
+.radio-label {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-ui); text-transform: none; font-size: 1rem; color: var(--white); cursor: pointer;
+}
+.radio-label input { width: auto; margin:0; accent-color: var(--gold); }
+
+.btn-submit {
+  background: var(--gold);
+  color: var(--navy);
+  width: 100%;
+  padding: 20px;
+  border: none;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: var(--transition);
+  margin-top: 24px;
+}
+.btn-submit:hover {
+  background: var(--gold2);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(255,255,255,0.25);
+}
+
+@media (max-width: 768px) {
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .glass-panel { padding: 32px 24px; }
+  .apply-header h1 { font-size: 2.2rem; }
+}
+
+/* ========================
+   FOOTER (Shared)
+======================== */
+footer {
+  border-top: 1px solid var(--glassborder);
+  padding: 28px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  background: var(--navy);
+}
+.footer-copy { font-size: 0.72rem; letter-spacing: 0.1em; color: var(--gray); }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NO PRELOADER ON SECONDARY PAGES, JUST HEADER -->
+<nav>
+  <a href="KOMUN26.html" class="nav-logo"><img src="logo.png" alt="KOMUN'26 Logo" style="height:95px; width:auto; object-fit:contain;"></a>
+  <a href="KOMUN26.html" class="nav-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Ana Sayfaya Dön
+  </a>
+</nav>
+
+<!-- APPLY SECTION -->
+<section id="apply-hero">
+  <div class="apply-bg"></div>
+  <canvas class="stars" id="starsCanvas"></canvas>
+
+  <div class="apply-container">
+    <div class="glass-panel">
+      <div class="apply-header">
+        <h1>Delege <span>Başvurusu</span></h1>
+        <p>Lütfen aşağıdaki formu eksiksiz bir şekilde doldurunuz.<br><em>Please fill out the form appropriately below.</em></p>
+      </div>
+
+      <form action="#" method="POST" id="applyForm">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ad Soyad <span class="en">/ Full Name</span></label>
+            <input type="text" name="name" required placeholder="Örn: Ahmet Yılmaz">
+          </div>
+          <div class="form-group">
+            <label>Okul veya Kurum <span class="en">/ School or Inst.</span></label>
+            <input type="text" name="school" required placeholder="Lütfen tam adı yazınız">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sınıf veya Yaş <span class="en">/ Grade or Age</span></label>
+            <input type="text" name="grade" required placeholder="Örn: 11. Sınıf veya 16">
+          </div>
+          <div class="form-group">
+            <label>Telefon Numarası <span class="en">/ Phone No.</span></label>
+            <input type="tel" name="phone" required placeholder="+90 5XX XXX XX XX">
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>E-Posta <span class="en">/ E-Mail</span></label>
+          <input type="email" name="email" required placeholder="iletisim@ornek.com">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>1. Komite Tercihi <span class="en">/ 1st Committee</span></label>
+            <select name="pref1" required>
+              <option value="" disabled selected>Komite Seçiniz / Select</option>
+              <option value="DISEC">DISEC</option>
+              <option value="SPECPOL">SPECPOL</option>
+              <option value="UNDP">UNDP</option>
+              <option value="IOM">IOM</option>
+              <option value="UNSC">UNSC</option>
+              <option value="G20">G20</option>
+              <option value="JCC">JCC</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>2. Komite Tercihi <span class="en">/ 2nd Committee</span></label>
+            <select name="pref2" required>
+              <option value="" disabled selected>Komite Seçiniz / Select</option>
+              <option value="DISEC">DISEC</option>
+              <option value="SPECPOL">SPECPOL</option>
+              <option value="UNDP">UNDP</option>
+              <option value="IOM">IOM</option>
+              <option value="UNSC">UNSC</option>
+              <option value="G20">G20</option>
+              <option value="JCC">JCC</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>Daha Önce MUN'a Katıldınız Mı? <span class="en">/ Previous MUN Experience?</span></label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="experience" value="yes" required> Evet / Yes
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="experience" value="no"> Hayır / No
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group full" id="exp-details-group" style="display:none; margin-top:-10px;">
+          <input type="text" name="experience_details" placeholder="Katıldığınız konferanslar ve sayıları / Which ones?">
+        </div>
+
+        <div class="form-group full">
+          <label>Motivasyon Mektubu <span class="en">/ Motivation Letter</span></label>
+          <textarea name="motivation" required placeholder="Bize neden bu komitelerde yer almak istediğinizi ve beklentilerinizi anlatınız. (Kısa yazı)"></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Başvuruyu Tamamla / Submit Application</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2026 KOMUN'26 — Tüm Hakları Saklıdır</div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+// Experience toggle
+document.querySelectorAll('input[name="experience"]').forEach((elem) => {
+  elem.addEventListener('change', function() {
+    const details = document.getElementById('exp-details-group');
+    if(this.value === 'yes') {
+      details.style.display = 'block';
+    } else {
+      details.style.display = 'none';
+      document.querySelector('input[name="experience_details"]').value = '';
+    }
+  });
+});
+
+// Cursor integration
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px'; cursor.style.top  = my + 'px';
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12; ry += (my - ry) *.12;
+  ring.style.left = rx + 'px'; ring.style.top  = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+document.querySelectorAll('a, button, input, select, textarea').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+    ring.style.opacity = '0.3';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    ring.style.opacity = '0.6';
+  });
+});
+
+// Interactive Canvas Stars
+const canvas = document.getElementById('starsCanvas');
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let particles = [];
+  
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.baseX = this.x;
+      this.baseY = this.y;
+      this.vx = (Math.random() - 0.5) * 0.5;
+      this.vy = (Math.random() - 0.5) * 0.5;
+      this.size = Math.random() * 2 + 1;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      const dx = mx - this.x;
+      const dy = my - this.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = 200;
+
+      if (dist < maxDist) {
+        const force = (maxDist - dist) / maxDist;
+        this.x += dx * force * 0.03;
+        this.y += dy * force * 0.03;
+      } else {
+        this.x += (this.baseX - this.x) * 0.01;
+        this.y += (this.baseY - this.y) * 0.01;
+      }
+      
+      this.baseX += this.vx; this.baseY += this.vy;
+      if (this.baseX < 0 || this.baseX > width) this.vx *= -1;
+      if (this.baseY < 0 || this.baseY > height) this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 150; i++) particles.push(new Particle());
+
+  function animateCanvas() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => { p.update(); p.draw(); });
+
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 80) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(255, 255, 255, ${1 - dist / 80})`; 
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(animateCanvas);
+  }
+  animateCanvas();
+}
+</script>
+</body>
+</html>
+
+
